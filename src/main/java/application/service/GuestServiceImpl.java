@@ -1,6 +1,8 @@
 package application.service;
 
 import application.domain.Guest;
+import application.repository.BedRoomRepository;
+import application.repository.GuestRepository;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -8,6 +10,17 @@ import java.util.Scanner;
 public class GuestServiceImpl implements GuestService {
 
     Scanner sc = new Scanner(System.in);
+
+    private final GuestRepository guestRepository;
+
+    public GuestServiceImpl(GuestRepository guestRepository){
+
+        this.guestRepository= guestRepository;
+
+    }
+
+
+
 
     @Override
     public Guest createGuest(Guest guest) {

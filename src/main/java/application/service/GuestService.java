@@ -12,8 +12,6 @@ public interface GuestService {
 
     public Guest updateGuest(Guest guest);
 
-
-
     public Optional<Guest> getGuestById(int id);
 
 
