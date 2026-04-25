@@ -7,11 +7,10 @@ import java.util.Optional;
 
 public interface BedRoomService {
 
-    BedRoom createBedRoom(int roomId,String room,int typeId,double  price,String state);
-    BedRoom updateBedRoom(int id, String room, int typeId, double price, String state);
+    BedRoom createBedRoom(BedRoom bedRoom);
+    BedRoom updateBedRoom(int id, BedRoom bedRoom);
     Optional<BedRoom> getBedRoomById(int id);
     List<BedRoom> getAllBedRooms();
     void deleteBedRoomById(int id);
-
 
 }

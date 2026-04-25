@@ -1,12 +1,6 @@
 package application.domain;
 
-import java.util.Scanner;
-
 public class BedRoom {
-
-
-    Scanner sc = new Scanner(System.in);
-
 
     private int roomId;
     private String room;
@@ -14,14 +8,13 @@ public class BedRoom {
     private double price;
     private String state;
 
-
     // Constructors
 
-    public BedRoom(){
+    public BedRoom() {
 
     }
 
-    public BedRoom(int roomId, String room,BedRoomType type,double price, String state) {
+    public BedRoom(int roomId, String room, BedRoomType type, double price, String state) {
         this.roomId = roomId;
         this.room = room;
         this.bedRoomType = type;
@@ -34,7 +27,6 @@ public class BedRoom {
     }
 
     // Getter and Setters
-
 
     public int getRoomId() {
         return roomId;
@@ -51,8 +43,6 @@ public class BedRoom {
     public void setRoom(String room) {
         this.room = room;
     }
-
-
 
     public double getPrice() {
         return price;
@@ -79,7 +69,5 @@ public class BedRoom {
     }
 
     // Methods
-
-
 
 }

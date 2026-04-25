@@ -1,6 +1,7 @@
 package application.view;
 
 import application.domain.BedRoom;
+import application.domain.BedRoomType;
 import application.service.BedRoomStateSelector;
 import application.service.outputs.BedRoomService;
 import application.util.FormValidationUtil;
@@ -11,118 +12,101 @@ public class BedRoomView {
 
     private final BedRoomService bedRoomService;
 
-
-
     public BedRoomView(BedRoomService bedRoomService) {
         this.bedRoomService = bedRoomService;
     }
 
     public void createBedRoom() {
-
-        System.out.println("Crear habitación");
+        System.out.println("--- Crear Habitación ---");
         try {
-            // Recolecta datos
             int roomId = FormValidationUtil.validateInt("Ingrese el Id de la habitación");
             String room = FormValidationUtil.validateString("Ingrese el número de habitación");
             int typeId = FormValidationUtil.validateInt("Ingrese el id del tipo");
             double price = FormValidationUtil.validateDouble("Ingrese el precio");
             String state = BedRoomStateSelector.bedRoomAddState();
 
-            // Delega al servicio con los datos ya listos
-            BedRoom created = bedRoomService.createBedRoom(roomId, room, typeId, price, state);
+            BedRoom bedRoom = new BedRoom(roomId, room, new BedRoomType(typeId, ""), price, state);
+            BedRoom created = bedRoomService.createBedRoom(bedRoom);
             System.out.println("Habitación creada: " + created.getRoomId());
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
         }
-
     }
 
     public void getAllBedRooms() {
-        System.out.println("Mostrando todas las habitaciones...");
-
+        System.out.println("--- Listado de Habitaciones ---");
         List<BedRoom> bedRoomList = bedRoomService.getAllBedRooms();
-
         for (BedRoom bedroom : bedRoomList) {
-            System.out.println(bedroom.getRoomId() + " "
-                    + bedroom.getRoom() + " "
-                    + bedroom.getBedRoomType().getType() + " "  // ← aquí accedes al tipo agregado
-                    + bedroom.getPrice() + " "
+            System.out.println(bedroom.getRoomId() + " | "
+                    + bedroom.getRoom() + " | "
+                    + bedroom.getBedRoomType().getType() + " | "
+                    + bedroom.getPrice() + " | "
                     + bedroom.getState());
         }
     }
 
+    public void getBedRoomById() {
+        System.out.println("--- Buscar Habitación ---");
+        try {
+            int id = FormValidationUtil.validateInt("Ingrese el ID");
+            BedRoom bedRoom = bedRoomService.getBedRoomById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Habitación no encontrada"));
 
-    public void getBedRoomById(){
-        System.out.println("Buscar habitación por Id");
-        BedRoom bedRoom = bedRoomService.getBedRoomById(FormValidationUtil
-                .validateInt("Ingrese el id de la Habitacion"))
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Habitacion no encontrada"
-                ));
-
-
-        System.out.println(bedRoom.getRoomId() + " "
-                + bedRoom.getRoom() + " "
-                + bedRoom.getBedRoomType().getType() + " "
-                + bedRoom.getPrice() + " "
-                + bedRoom.getState());
-
-    }
-
-
-    public void updateBedRoom(){
-
-        int id = FormValidationUtil.validateInt("Ingrese el id de la habitación a Actualizar");
-
-        int option= FormValidationUtil.validateInt("1. Seleccione campo a actualizar" +
-                "1. id 2. Numero de hab 3. tipo de habitacion 4. Precio 5. Estado");
-
-        BedRoom currentBedRoom = bedRoomService.getBedRoomById(id).orElseThrow(()-> new IllegalArgumentException(
-                "Habitacion no existe"
-        ));
-
-        String room = currentBedRoom.getRoom();
-        int typeId = currentBedRoom.getBedRoomType().getIdType();
-        double price = currentBedRoom.getPrice();
-        String state = currentBedRoom.getState();
-
-        System.out.println("Habitación Actual" +"\n" +
-                "id" + id + "\n" +
-                "Numero" + room + "\n" +
-                "Tipo" + typeId + "\n" +
-                "Estado: " + state) ;
-
-
-        switch (option){
-
-            case 1:
-                room = FormValidationUtil.validateString("Actualizar habitación");
-                break;
-            case 2:
-                typeId = FormValidationUtil.validateInt("Ingrese el id del tipo a actulizar");
-                break;
-            case 3:
-                price= FormValidationUtil.validateDouble("Ingrese el nuevo precio");
-                break;
-            case 4:
-                state= BedRoomStateSelector.bedRoomAddState();
-                break;
-            default:
-                System.out.println("Seleccione una opción valida");
-
+            System.out.println(bedRoom.getRoomId() + " | "
+                    + bedRoom.getRoom() + " | "
+                    + bedRoom.getBedRoomType().getType() + " | "
+                    + bedRoom.getPrice() + " | "
+                    + bedRoom.getState());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-
-
-
-        bedRoomService.updateBedRoom(id,room,typeId,price,state );
-
     }
 
+    public void updateBedRoom() {
+        System.out.println("--- Actualizar Habitación ---");
+        try {
+            int id = FormValidationUtil.validateInt("Ingrese el ID de la habitación a actualizar");
+            BedRoom current = bedRoomService.getBedRoomById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Habitación no existe"));
 
-    public void deleteBedRoomById(){
-        bedRoomService.deleteBedRoomById(FormValidationUtil.validateInt("Ingrese el id de habitación a eliminar"));
+            System.out.println("Datos actuales: " + current.getRoom() + " (" + current.getBedRoomType().getType() + ")");
+            
+            System.out.println("Seleccione campo a actualizar:\n1. Número\n2. Tipo\n3. Precio\n4. Estado");
+            int option = FormValidationUtil.validateInt("Opción");
+
+            switch (option) {
+                case 1:
+                    current.setRoom(FormValidationUtil.validateString("Nuevo número"));
+                    break;
+                case 2:
+                    int typeId = FormValidationUtil.validateInt("Nuevo ID de tipo");
+                    current.setBedRoomType(new BedRoomType(typeId, ""));
+                    break;
+                case 3:
+                    current.setPrice(FormValidationUtil.validateDouble("Nuevo precio"));
+                    break;
+                case 4:
+                    current.setState(BedRoomStateSelector.bedRoomAddState());
+                    break;
+                default:
+                    System.out.println("Opción no válida");
+                    return;
+            }
+
+            bedRoomService.updateBedRoom(id, current);
+            System.out.println("Habitación actualizada.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-
-
+    public void deleteBedRoomById() {
+        try {
+            int id = FormValidationUtil.validateInt("Ingrese el ID a eliminar");
+            bedRoomService.deleteBedRoomById(id);
+            System.out.println("Habitación eliminada.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
 }

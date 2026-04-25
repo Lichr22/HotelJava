@@ -1,26 +1,27 @@
 package application.domain;
 
-public class Employee extends Person{
+import application.domain.enums.EmployeePosition;
 
-    private String position;
+public class Employee extends Person {
+
+    private EmployeePosition position;
     private double salary;
 
-    public Employee(){
-
+    public Employee() {
         super();
     }
 
-    public Employee(int id, String name, String lastName, String email, String password, Boolean state, String position, double salary) {
+    public Employee(int id, String name, String lastName, String email, String password, Boolean state, EmployeePosition position, double salary) {
         super(id, name, lastName, email, password, state);
         this.position = position;
         this.salary = salary;
     }
 
-    public String getPosition() {
+    public EmployeePosition getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(EmployeePosition position) {
         this.position = position;
     }
 
@@ -35,8 +36,8 @@ public class Employee extends Person{
     @Override
     public String toString() {
         return "Employee{" +
-                "position='" + position + '\'' +
+                "position=" + (position != null ? position.getDescription() : "N/A") +
                 ", salary=" + salary +
-                '}';
+                "} " + super.toString();
     }
 }

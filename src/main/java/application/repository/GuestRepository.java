@@ -1,39 +1,40 @@
 package application.repository;
 
-import application.domain.BedRoom;
 import application.domain.Guest;
+import application.domain.enums.GuestType;
+import application.service.ports.GuestRepositoryPort;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class GuestRepository {
+public class GuestRepository implements GuestRepositoryPort {
 
+    private final List<Guest> guests = new CopyOnWriteArrayList<>(List.of(
+            new Guest(1, "Maria", "Gomez", "mg@mail.com", "123456", true, "Medellín", GuestType.NUEVO),
+            new Guest(2, "Juan", "Perez", "juan@mail.com", "12345678", true, "Bogotá", GuestType.FRECUENTE)
+    ));
 
-    List<Guest> guests = new ArrayList<>(
-            Arrays.asList(
-                   new Guest(1, "Maria", "Gomez","mg@mail.com", "123456" , true , "Medellín" , "Nuevo"),
-                   new Guest(2, "Juan", "Perez", "juan@mail.com","12345678", true , "Bogotá", "Frecuente")
-            )
-    );
-
-
-    public Guest saveGuest(Guest guest){
-
+    @Override
+    public Guest saveGuest(Guest guest) {
         guests.add(guest);
-
         return guest;
-
     }
 
-    public List<Guest> getAllGuests(){
-
-        for(Guest guest : guests){
-            System.out.println(guest);
-        }
-
+    @Override
+    public List<Guest> findAllGuests() {
         return guests;
-
     }
 
+    @Override
+    public Optional<Guest> findGuestById(int id) {
+        return guests.stream()
+                .filter(guest -> guest.getId() == id)
+                .findFirst();
+    }
+
+    @Override
+    public void deleteGuestById(int id) {
+        guests.removeIf(guest -> guest.getId() == id);
+    }
 }

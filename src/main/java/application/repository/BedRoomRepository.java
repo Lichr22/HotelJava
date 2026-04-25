@@ -6,22 +6,18 @@ import application.domain.enums.BedRoomEnums;
 import application.domain.enums.BedRoomState;
 import application.service.ports.BedRoomRepositoryPort;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BedRoomRepository implements BedRoomRepositoryPort {
 
 
-    List<BedRoom> bedRooms = new ArrayList<>(
-            Arrays.asList(
-                    new BedRoom(1, "201", new BedRoomType(1,"Indivual"),120000, BedRoomState.DISPONIBLE.getDescription()),
-                    new BedRoom(2, "202", new BedRoomType(1,"Doble"),180000, BedRoomState.OCUPADA.getDescription() ),
-                    new BedRoom(3, "203", new BedRoomType(1,"Suite"),240000, BedRoomState.RESERVADA.getDescription())
-
-
-            ));
+    private final List<BedRoom> bedRooms = new CopyOnWriteArrayList<>(List.of(
+            new BedRoom(1, "201", new BedRoomType(1, "Individual"), 120000, BedRoomState.DISPONIBLE.getDescription()),
+            new BedRoom(2, "202", new BedRoomType(2, "Doble"), 180000, BedRoomState.OCUPADA.getDescription()),
+            new BedRoom(3, "203", new BedRoomType(3, "Suite"), 240000, BedRoomState.RESERVADA.getDescription())
+    ));
 
     public BedRoom saveBedRoom(BedRoom bedRoom){
 
@@ -32,26 +28,21 @@ public class BedRoomRepository implements BedRoomRepositoryPort {
     }
 
     @Override
-    public BedRoom updateBedRoom( int id, BedRoom bedRoom) {
-
-        for(int i = 0; i< bedRooms.size(); i++){
-            if(bedRooms.get(i).getRoomId() == id){
+    public BedRoom updateBedRoom(int id, BedRoom bedRoom) {
+        for (int i = 0; i < bedRooms.size(); i++) {
+            if (bedRooms.get(i).getRoomId() == id) {
                 bedRooms.set(i, bedRoom);
                 return bedRoom;
             }
         }
-        throw new IllegalArgumentException("Habitación con Id " + id + "no encontrada");
+        throw new IllegalArgumentException("Habitación con Id " + id + " no encontrada");
     }
 
     @Override
     public Optional<BedRoom> findBedRoomById(int id) {
-
-        for(BedRoom bedroom: bedRooms){
-            if(bedroom.getRoomId() == id){
-                return Optional.of(bedroom);
-            }
-        }
-        return Optional.empty();
+        return bedRooms.stream()
+                .filter(bedroom -> bedroom.getRoomId() == id)
+                .findFirst();
     }
 
     @Override
@@ -63,14 +54,9 @@ public class BedRoomRepository implements BedRoomRepositoryPort {
 
     @Override
     public void deleteBedRoomById(int id) {
-
-        for(BedRoom bedroom: bedRooms){
-            if(bedroom.getRoomId() == id){
-                bedRooms.remove(bedroom);
-                System.out.println("Habitacion con id " + id + " ha sido eliminada.");
-            }
+        boolean removed = bedRooms.removeIf(bedroom -> bedroom.getRoomId() == id);
+        if (!removed) {
+            throw new IllegalArgumentException("Habitacion con id " + id + " no encontrada.");
         }
-         System.out.println("Habitacion con id " + id + " no encontrada.");
-
     }
 }

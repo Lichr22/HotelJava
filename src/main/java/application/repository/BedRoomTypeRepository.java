@@ -4,23 +4,19 @@ import application.domain.BedRoomType;
 import application.service.ports.BedRoomRepositoryPort;
 import application.service.ports.BedRoomTypeRepositoryPort;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BedRoomTypeRepository implements BedRoomTypeRepositoryPort {
 
 
-    List<BedRoomType> bedRoomTypes = new ArrayList<>(
-            Arrays.asList(
-                    new BedRoomType(1, "Single"),
-                    new BedRoomType(2, "Doble"),
-                    new BedRoomType(3, "suit"),
-                    new BedRoomType(4, "Grupal")
-
-            )
-    );
+    private final List<BedRoomType> bedRoomTypes = new CopyOnWriteArrayList<>(List.of(
+            new BedRoomType(1, "Sencilla"),
+            new BedRoomType(2, "Doble"),
+            new BedRoomType(3, "Suite"),
+            new BedRoomType(4, "Grupal")
+    ));
 
     @Override
     public BedRoomType saveBedRoomType() {
@@ -29,14 +25,8 @@ public class BedRoomTypeRepository implements BedRoomTypeRepositoryPort {
 
     @Override
     public Optional<BedRoomType> findBedRoomTypeById(int id) {
-
-        for(BedRoomType bedRoomType : bedRoomTypes){
-            if(id == bedRoomType.getIdType()){
-                return Optional.of(bedRoomType);
-            }
-        }
-
-
-        return Optional.empty();
+        return bedRoomTypes.stream()
+                .filter(type -> type.getIdType() == id)
+                .findFirst();
     }
 }
