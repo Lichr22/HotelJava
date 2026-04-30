@@ -34,7 +34,21 @@ public class GuestRepository implements GuestRepositoryPort {
     }
 
     @Override
+    public Guest updateGuest(int id, Guest guest) {
+        for (int i = 0; i < guests.size(); i++) {
+            if (guests.get(i).getId() == id) {
+                guests.set(i, guest);
+                return guest;
+            }
+        }
+        throw new IllegalArgumentException("Huésped con ID " + id + " no encontrado");
+    }
+
+    @Override
     public void deleteGuestById(int id) {
-        guests.removeIf(guest -> guest.getId() == id);
+        boolean removed = guests.removeIf(guest -> guest.getId() == id);
+        if (!removed) {
+            throw new IllegalArgumentException("Huésped con ID " + id + " no encontrado");
+        }
     }
 }

@@ -28,8 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepositoryPort.findEmployeeById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
         
-        // En una implementación real, aquí actualizaríamos el objeto
-        return employeeRepositoryPort.saveEmployee(employee);
+        return employeeRepositoryPort.updateEmployee(id, employee);
     }
 
     @Override

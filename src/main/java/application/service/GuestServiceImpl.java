@@ -28,7 +28,7 @@ public class GuestServiceImpl implements GuestService {
         guestRepository.findGuestById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Huésped no encontrado con ID: " + id));
         
-        return guestRepository.saveGuest(guest);
+        return guestRepository.updateGuest(id, guest);
     }
 
     @Override

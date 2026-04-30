@@ -19,8 +19,9 @@ public class BedRoomTypeRepository implements BedRoomTypeRepositoryPort {
     ));
 
     @Override
-    public BedRoomType saveBedRoomType() {
-        return null;
+    public BedRoomType saveBedRoomType(BedRoomType bedRoomType) {
+        bedRoomTypes.add(bedRoomType);
+        return bedRoomType;
     }
 
     @Override
@@ -28,5 +29,29 @@ public class BedRoomTypeRepository implements BedRoomTypeRepositoryPort {
         return bedRoomTypes.stream()
                 .filter(type -> type.getIdType() == id)
                 .findFirst();
+    }
+
+    @Override
+    public List<BedRoomType> findAllBedRoomTypes() {
+        return bedRoomTypes;
+    }
+
+    @Override
+    public BedRoomType updateBedRoomType(int id, BedRoomType bedRoomType) {
+        for (int i = 0; i < bedRoomTypes.size(); i++) {
+            if (bedRoomTypes.get(i).getIdType() == id) {
+                bedRoomTypes.set(i, bedRoomType);
+                return bedRoomType;
+            }
+        }
+        throw new IllegalArgumentException("Tipo de habitación con ID " + id + " no encontrado");
+    }
+
+    @Override
+    public void deleteBedRoomTypeById(int id) {
+        boolean removed = bedRoomTypes.removeIf(type -> type.getIdType() == id);
+        if (!removed) {
+            throw new IllegalArgumentException("Tipo de habitación con ID " + id + " no encontrado");
+        }
     }
 }

@@ -34,7 +34,21 @@ public class EmployeeRepository implements EmployeeRepositoryPort {
     }
 
     @Override
+    public Employee updateEmployee(int id, Employee employee) {
+        for (int i = 0; i < employees.size(); i++) {
+            if (employees.get(i).getId() == id) {
+                employees.set(i, employee);
+                return employee;
+            }
+        }
+        throw new IllegalArgumentException("Empleado con ID " + id + " no encontrado");
+    }
+
+    @Override
     public void deleteEmployeeById(int id) {
-        employees.removeIf(emp -> emp.getId() == id);
+        boolean removed = employees.removeIf(emp -> emp.getId() == id);
+        if (!removed) {
+            throw new IllegalArgumentException("Empleado con ID " + id + " no encontrado");
+        }
     }
 }

@@ -1,26 +1,26 @@
 package application.service;
 
 import application.domain.Guest;
-import application.repository.GuestRepository;
+import application.service.ports.GuestRepositoryPort;
 import application.service.outputs.GuestAdminService;
 
 import java.util.List;
 
 public class GuestAdminServiceImpl implements GuestAdminService {
 
+    private final GuestRepositoryPort guestRepository;
 
-    private final GuestRepository guestRepository;
-
-    public GuestAdminServiceImpl(GuestRepository guestRepository) {
+    public GuestAdminServiceImpl(GuestRepositoryPort guestRepository) {
         this.guestRepository = guestRepository;
     }
 
-    public List<Guest> getGuests() {
-        return guestRepository.getAllGuests();
+    @Override
+    public List<Guest> getAllGuests() {
+        return guestRepository.findAllGuests();
     }
 
     @Override
     public void deleteGuest(int id) {
-
+        guestRepository.deleteGuestById(id);
     }
 }

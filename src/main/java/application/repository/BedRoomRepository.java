@@ -2,7 +2,6 @@ package application.repository;
 
 import application.domain.BedRoom;
 import application.domain.BedRoomType;
-import application.domain.enums.BedRoomEnums;
 import application.domain.enums.BedRoomState;
 import application.service.ports.BedRoomRepositoryPort;
 
@@ -12,14 +11,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BedRoomRepository implements BedRoomRepositoryPort {
 
-
     private final List<BedRoom> bedRooms = new CopyOnWriteArrayList<>(List.of(
             new BedRoom(1, "201", new BedRoomType(1, "Individual"), 120000, BedRoomState.DISPONIBLE.getDescription()),
             new BedRoom(2, "202", new BedRoomType(2, "Doble"), 180000, BedRoomState.OCUPADA.getDescription()),
-            new BedRoom(3, "203", new BedRoomType(3, "Suite"), 240000, BedRoomState.RESERVADA.getDescription())
-    ));
+            new BedRoom(3, "203", new BedRoomType(3, "Suite"), 240000, BedRoomState.RESERVADA.getDescription())));
 
-    public BedRoom saveBedRoom(BedRoom bedRoom){
+    public BedRoom saveBedRoom(BedRoom bedRoom) {
 
         bedRooms.add(bedRoom);
 
